@@ -9,6 +9,18 @@ export interface Entity {
     id?: number;
 }
 
+// existem 2 tipos de serviços no angular:
+// 1. serviços que fornecem dados (data services)
+// 2. serviços que fornecem funcionalidades (utility services)
+// esse serviço é um data service, pois fornece dados da API do pokeapi.co
+
+// precisamos criar outro serviço para fornecer funcionalidades, como por exemplo, formatação de strings, manipulação de datas, etc.
+// esse serviço de utilidades pode ser injetado em qualquer componente ou serviço que precise dessas funcionalidades.   
+// e ele conterá um state global da aplicação, se necessário.
+// toda vez que precisarmos de um dado da API, devemos criar um método nesse serviço para buscar esse dado localmente em cache.
+// e se ele não estiver em cache, buscar na API e armazenar em cache para futuras requisições. 
+
+// renomeie esse servico para pokenode-service.ts e o outro se chamará pokenode-store.ts
 @Injectable()
 export class AppService {
     protected API_URL = 'https://pokeapi.co/api/v2';

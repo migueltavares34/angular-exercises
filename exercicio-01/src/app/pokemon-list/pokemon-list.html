@@ -1,4 +1,7 @@
 <div class="list-group">
+  <!-- ngForOf esta deprecated a partir do angular 19 ou 20
+   Ele ainda é a maneira correta de usar em versões antigas, mas tenha em mente a nova
+   sintaxe do angular para os templates, como @for @if @let -->
   <div class="list-group-item" *ngFor="let pokemon of pokemonList$ | async">    
     <br>
     <p>{{ pokemon.name }}</p>

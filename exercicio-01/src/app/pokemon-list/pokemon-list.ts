@@ -19,6 +19,13 @@ export class PokemonList {
   constructor(
     public appService: AppService, public router: Router
   ) {
+    // perfeito!
+    // como proximo passo, vamos acessar a lista atraves da pokenode-store que vamos criar
+    // Como regra: todo acesso a dados deve ser feito atraves do store 
+    // e nunca diretamente pelo componente
+
+    // componentes angulares devem ser "burros", ou seja, não devem conter lógica de negócio
+    // eles apenas exibem dados e emitem eventos para o usuário interagir
     this.pokemonList$ = appService.getPokemonList().pipe(map(pokemon => pokemon.results));
   }
 
