@@ -1,22 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AppService } from '../app.service';
+import { PokenodeStore } from '../pokenode.store';
 import { Pokemon } from 'pokenode-ts';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { PokenodeService } from '../pokenode.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-pokemon-detail',
+  standalone: true,
   templateUrl: './pokemon-detail.html',
   styleUrl: './pokemon-detail.css',
-  providers: [AppService],
+  imports: [AsyncPipe],
+  providers: [PokenodeStore, PokenodeService]
 })
 
-export class PokemonDetail {
-  private pokemonObservable$?: Observable<Pokemon>;
-  public pokemonDetails?: Pokemon;
+export class PokemonDetail implements OnInit {
+  public pokemonObservable$: Observable<Pokemon> | undefined;
 
-  constructor(activatedRoute: ActivatedRoute, appService: AppService) {
-    activatedRoute.params.subscribe(params => this.pokemonObservable$=appService.getPokemonDetails(params['id']));
-    this.pokemonObservable$?.subscribe(pokemon=>this.pokemonDetails=pokemon);
+  constructor(private activatedRoute: ActivatedRoute, private pokenodeStore: PokenodeStore) { }
+
+  ngOnInit(): void {
+    let param;
+    this.activatedRoute.params.subscribe(params => param = String(params['id']));
+
+    if (param) {
+      this.pokemonObservable$ = this.pokenodeStore.getPokemonDetails(param);
+    }
   }
 }

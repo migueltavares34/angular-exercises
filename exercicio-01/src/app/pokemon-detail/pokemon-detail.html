@@ -1,6 +1,5 @@
-
-    <p>Name: {{ pokemonDetails?.name }}</p>
-    <p>Total habilities: {{ pokemonDetails?.abilities?.length }}</p>
-    <p>Base expirience: {{ pokemonDetails?.base_experience }}</p>
-    <p>Height: {{ pokemonDetails?.height }}</p>
-    <p>Weight: {{ pokemonDetails?.weight }}</p>
+<p>Name: {{ (pokemonObservable$ | async)?.name }}</p>
+<p>Total habilities: {{ (pokemonObservable$ | async)?.abilities?.length }}</p>
+<p>Base expirience: {{ (pokemonObservable$ | async)?.base_experience }}</p>
+<p>Height: {{ (pokemonObservable$ | async)?.height }}</p>
+<p>Weight: {{ (pokemonObservable$ | async)?.weight }}</p>

@@ -1,7 +1,9 @@
 <div class="list-group">
-  <div class="list-group-item" *ngFor="let pokemon of pokemonList$ | async">    
-    <br>
+  @for (pokemon of pokemonList$ | async; track $index) {
+  <div class="list-group-item">
+    <br />
     <p>{{ pokemon.name }}</p>
     <button class="detail" (click)="goToDetail(pokemon)">Show Details</button>
   </div>
+  }
 </div>

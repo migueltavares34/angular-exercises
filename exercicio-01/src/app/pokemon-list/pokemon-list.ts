@@ -1,25 +1,26 @@
-import { Component } from '@angular/core';
-import { AppService } from '../app.service';
+import { Component, OnInit } from '@angular/core';
+import { PokenodeStore } from '../pokenode.store';
 import { map, Observable } from 'rxjs';
-import { CommonModule } from '@angular/common'
-import { NamedAPIResource, NamedAPIResourceList } from 'pokenode-ts';
+import { AsyncPipe, CommonModule } from '@angular/common'
+import { NamedAPIResource } from 'pokenode-ts';
 import { Router } from '@angular/router';
+import { PokenodeService } from '../pokenode.service';
 
 @Component({
   selector: 'app-pokemon-list',
   standalone: true,
   templateUrl: './pokemon-list.html',
   styleUrl: './pokemon-list.css',
-  imports: [CommonModule],
-  providers: [AppService],
+  imports: [CommonModule,AsyncPipe],
+  providers: [PokenodeStore,PokenodeService]
 })
-export class PokemonList {
-  public pokemonList$: Observable<NamedAPIResource[]>;
+export class PokemonList implements OnInit {
+  public pokemonList$ = new Observable<NamedAPIResource[]>();
 
-  constructor(
-    public appService: AppService, public router: Router
-  ) {
-    this.pokemonList$ = appService.getPokemonList().pipe(map(pokemon => pokemon.results));
+  constructor(private pokenodeStore: PokenodeStore, private router: Router) {}
+
+  ngOnInit(): void {
+    this.pokemonList$ = this.pokenodeStore.getPokemonList().pipe(map(pokemon=>pokemon.results));
   }
 
   goToDetail(pokemon: NamedAPIResource) {
