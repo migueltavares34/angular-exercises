@@ -4,7 +4,33 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [],
+    "plugins": [{ "name": "typescript-strict-plugin" }],
+
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "lib": ["ESNext", "DOM"],
+
+    "baseUrl": "./",
+    "declaration": false,
+    "pretty": false,
+    "sourceMap": true,
+    "importHelpers": true,
+
+    "paths": {
+      "core-js/es7/reflect": ["node_modules/core-js/proposals/reflect-metadata"]
+    },
+
+    "strict": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "useDefineForClassFields": false,
+
+    // Both decoratator rules need to be true to make angular's DI work together
+    // with consistent type imports.
+    // https://typescript-eslint.io/rules/consistent-type-imports/
+    // More explanation: https://github.com/typescript-eslint/typescript-eslint/issues/2559
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "src/**/*.ts"

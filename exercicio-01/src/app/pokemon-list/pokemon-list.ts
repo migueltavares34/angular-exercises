@@ -11,16 +11,16 @@ import { PokenodeService } from '../pokenode.service';
   standalone: true,
   templateUrl: './pokemon-list.html',
   styleUrl: './pokemon-list.css',
-  imports: [CommonModule,AsyncPipe],
-  providers: [PokenodeStore,PokenodeService]
+  imports: [CommonModule, AsyncPipe],
+  providers: [PokenodeStore, PokenodeService]
 })
 export class PokemonList implements OnInit {
-  public pokemonList$ = new Observable<NamedAPIResource[]>();
+  public pokemonList$: Observable<NamedAPIResource[]>;
 
-  constructor(private pokenodeStore: PokenodeStore, private router: Router) {}
+  constructor(private pokenodeStore: PokenodeStore, private router: Router) { }
 
   ngOnInit(): void {
-    this.pokemonList$ = this.pokenodeStore.getPokemonList().pipe(map(pokemon=>pokemon.results));
+    this.pokemonList$ = this.pokenodeStore.getPokemonList();
   }
 
   goToDetail(pokemon: NamedAPIResource) {

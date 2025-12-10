@@ -1,5 +1,6 @@
 <div class="list-group">
-  @for (pokemon of pokemonList$ | async; track $index) {
+  @let pokemonList = pokemonList$ | async;
+  @for (pokemon of pokemonList; track pokemon.name) {
   <div class="list-group-item">
     <br />
     <p>{{ pokemon.name }}</p>

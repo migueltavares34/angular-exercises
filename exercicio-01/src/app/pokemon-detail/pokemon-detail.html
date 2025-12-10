@@ -1,5 +1,9 @@
-<p>Name: {{ (pokemonObservable$ | async)?.name }}</p>
-<p>Total habilities: {{ (pokemonObservable$ | async)?.abilities?.length }}</p>
-<p>Base expirience: {{ (pokemonObservable$ | async)?.base_experience }}</p>
-<p>Height: {{ (pokemonObservable$ | async)?.height }}</p>
-<p>Weight: {{ (pokemonObservable$ | async)?.weight }}</p>
+
+@let pokemonDetail = pokemonObservable$ | async;
+@if (pokemonDetail) {
+    <p>Name: {{ pokemonDetail.name }}</p>
+    <p>Total habilities: {{ pokemonDetail.abilities?.length }}</p>
+    <p>Base expirience: {{ pokemonDetail.base_experience }}</p>
+    <p>Height: {{ pokemonDetail.height }}</p>
+    <p>Weight: {{ pokemonDetail.weight }}</p>
+}

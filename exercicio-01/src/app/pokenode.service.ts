@@ -10,10 +10,11 @@ export class PokenodeService {
     constructor(private _http: HttpClient) {}
 
     getPokemonListFromApi() : Observable <NamedAPIResourceList> {
-        return this._http.get<NamedAPIResourceList>(this.API_URL + '/pokemon');
+        let coiso= this._http.get<NamedAPIResourceList>(this.API_URL + '/pokemon');
+        return coiso;
     }
 
-    getPokemonDetailsFromApi(id: string) {
+    getPokemonDetailsFromApi(id: string) : Observable<Pokemon> {
         return this._http.get<Pokemon>(this.API_URL + '/pokemon/' + id);
     }
 }
