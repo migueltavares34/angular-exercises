@@ -12,19 +12,24 @@ export interface Entity {
 
 @Injectable()
 export class PokenodeStore {
-    private pokemonList$ = new BehaviorSubject<NamedAPIResource[]>([]);
-    cache$ = this.pokemonList$.asObservable();
-
-    private pokemonDetailsMap: Map<string, BehaviorSubject<Pokemon>> = new Map();
-
-
-    constructor(private pokenodeService: PokenodeService) { }
-
-    getPokemonList(): Observable<NamedAPIResource[]> {
-        if (this.pokemonList$.value.length === 0) {
-            this.pokenodeService.getPokemonListFromApi().pipe(tap(lista => this.pokemonList$.next(lista.results))).subscribe();
+    private pokemonListSub = new BehaviorSubject<NamedAPIResource[]>([]);
+    pokemonList$ = this.pokemonListSub.asObservable().pipe(switchMap(pokemonlist => {
+        if (!pokemonlist) {
+            this.getPokemonList();
         }
-        return this.cache$;
+        return of(pokemonlist);
+    }));
+
+
+    constructor(private pokenodeService: PokenodeService) {
+        this.getPokemonList();
+    }
+
+    getPokemonList() {
+        this.pokenodeService.getPokemonListFromApi().pipe(tap(namedAPIResourceList => this.pokemonListSub.next(namedAPIResourceList.results))).subscribe();
+    }
+
+
     }
 
     getPokemonDetails(id: string): Observable<Pokemon> {

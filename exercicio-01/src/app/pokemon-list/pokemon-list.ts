@@ -14,14 +14,10 @@ import { PokenodeService } from '../pokenode.service';
   imports: [CommonModule, AsyncPipe],
   providers: [PokenodeStore, PokenodeService]
 })
-export class PokemonList implements OnInit {
-  public pokemonList$: Observable<NamedAPIResource[]>;
+export class PokemonList {
+  public pokemonList$: Observable<NamedAPIResource[]> = this.pokenodeStore.pokemonList$;
 
   constructor(private pokenodeStore: PokenodeStore, private router: Router) { }
-
-  ngOnInit(): void {
-    this.pokemonList$ = this.pokenodeStore.getPokemonList();
-  }
 
   goToDetail(pokemon: NamedAPIResource) {
 
