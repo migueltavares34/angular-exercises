@@ -1,7 +1,7 @@
 
 import { Injectable, InjectionToken } from '@angular/core';
-import { NamedAPIResource, NamedAPIResourceList, Pokemon } from 'pokenode-ts';
-import { BehaviorSubject, map, Observable, shareReplay, Subject, tap } from 'rxjs';
+import { NamedAPIResource, Pokemon } from 'pokenode-ts';
+import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
 import { PokenodeService } from './pokenode.service';
 
 export const DATA_URL = new InjectionToken('DATA_URL');
@@ -13,13 +13,14 @@ export interface Entity {
 @Injectable()
 export class PokenodeStore {
     private pokemonListSub = new BehaviorSubject<NamedAPIResource[]>([]);
-    pokemonList$ = this.pokemonListSub.asObservable().pipe(switchMap(pokemonlist => {
+    public pokemonList$ = this.pokemonListSub.asObservable().pipe(switchMap(pokemonlist => {
         if (!pokemonlist) {
             this.getPokemonList();
         }
         return of(pokemonlist);
     }));
 
+    private pokemonDetailsMapSub: Map<string, BehaviorSubject<Pokemon>>=new Map();
 
     constructor(private pokenodeService: PokenodeService) {
         this.getPokemonList();
@@ -29,18 +30,15 @@ export class PokenodeStore {
         this.pokenodeService.getPokemonListFromApi().pipe(tap(namedAPIResourceList => this.pokemonListSub.next(namedAPIResourceList.results))).subscribe();
     }
 
-
-    }
-
     getPokemonDetails(id: string): Observable<Pokemon> {
-        if (!this.pokemonDetailsMap.has(id)) {
+        if (!this.pokemonDetailsMapSub.has(id)) {
             let coisa: BehaviorSubject<Pokemon | null> = new BehaviorSubject(null);
 
             this.pokenodeService.getPokemonDetailsFromApi(id).pipe(tap(detail => coisa.next(detail))).subscribe();
 
-            this.pokemonDetailsMap.set(id, coisa);
+            this.pokemonDetailsMapSub.set(id, coisa);
         }
 
-        return this.pokemonDetailsMap.get(id).asObservable();
+        return this.pokemonDetailsMapSub.get(id).asObservable();
     }
 }
