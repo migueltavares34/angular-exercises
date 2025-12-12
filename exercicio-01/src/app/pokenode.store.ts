@@ -20,7 +20,10 @@ export class PokenodeStore {
         return of(pokemonlist);
     }));
 
-    private pokemonDetailsMapSub: Map<string, BehaviorSubject<Pokemon>>=new Map();
+    private pokemonDetailsMap: Map<string, BehaviorSubject<Pokemon>> = new Map();
+
+    private pokemonDetailsMapSub: BehaviorSubject<Map<string, Pokemon>> = new BehaviorSubject(null);
+    public pokemonDetailsMap$ = this.pokemonDetailsMapSub.asObservable();
 
     constructor(private pokenodeService: PokenodeService) {
         this.getPokemonList();
@@ -31,14 +34,20 @@ export class PokenodeStore {
     }
 
     getPokemonDetails(id: string): Observable<Pokemon> {
-        if (!this.pokemonDetailsMapSub.has(id)) {
+        if (!this.pokemonDetailsMap.has(id)) {
             let coisa: BehaviorSubject<Pokemon | null> = new BehaviorSubject(null);
 
             this.pokenodeService.getPokemonDetailsFromApi(id).pipe(tap(detail => coisa.next(detail))).subscribe();
 
-            this.pokemonDetailsMapSub.set(id, coisa);
+            this.pokemonDetailsMap.set(id, coisa);
         }
 
-        return this.pokemonDetailsMapSub.get(id).asObservable();
+        return this.pokemonDetailsMap.get(id).asObservable();
+    }
+    putIdOnMap(id: string) {
+        this.pokemonDetailsMapSub.value.set(id, null);
+    }
+    getPokemonNewDetails(id: string) {
+        this.pokenodeService.getPokemonDetailsFromApi(id).pipe(tap(detail => this.pokemonDetailsMapSub.next(this.pokemonDetailsMapSub.value.set(id, detail)))).subscribe();
     }
 }
