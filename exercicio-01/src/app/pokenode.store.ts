@@ -20,10 +20,7 @@ export class PokenodeStore {
         return of(pokemonlist);
     }));
 
-    private pokemonDetailsMap: Map<string, BehaviorSubject<Pokemon>> = new Map();
-
-    private pokemonDetailsMapSub: BehaviorSubject<Map<string, Pokemon>> = new BehaviorSubject(null);
-    public pokemonDetailsMap$ = this.pokemonDetailsMapSub.asObservable();
+    private pokemonDetailsMapSub = new BehaviorSubject<Map<string, Pokemon>>(new Map());
 
     constructor(private pokenodeService: PokenodeService) {
         this.getPokemonList();
@@ -33,21 +30,31 @@ export class PokenodeStore {
         this.pokenodeService.getPokemonListFromApi().pipe(tap(namedAPIResourceList => this.pokemonListSub.next(namedAPIResourceList.results))).subscribe();
     }
 
-    getPokemonDetails(id: string): Observable<Pokemon> {
-        if (!this.pokemonDetailsMap.has(id)) {
-            let coisa: BehaviorSubject<Pokemon | null> = new BehaviorSubject(null);
-
-            this.pokenodeService.getPokemonDetailsFromApi(id).pipe(tap(detail => coisa.next(detail))).subscribe();
-
-            this.pokemonDetailsMap.set(id, coisa);
-        }
-
-        return this.pokemonDetailsMap.get(id).asObservable();
-    }
-    putIdOnMap(id: string) {
-        this.pokemonDetailsMapSub.value.set(id, null);
-    }
-    getPokemonNewDetails(id: string) {
-        this.pokenodeService.getPokemonDetailsFromApi(id).pipe(tap(detail => this.pokemonDetailsMapSub.next(this.pokemonDetailsMapSub.value.set(id, detail)))).subscribe();
+    public getPokemonDetails(id: string) : Observable<Pokemon>{
+        return this.pokemonDetailsMapSub.pipe(
+            map((map) => {
+                // verifica se existe em memória e retorna se houver
+                if (map.has(id)) {
+                    return map.get(id);
+                }
+                return undefined;
+            }),
+            tap((cachedPokemon) => {
+                if (!!cachedPokemon) {
+                    return of(cachedPokemon);
+                } else {
+                    // senão busca da api getPokemonDetailsFromApi
+                    const pokemonDetail = this.pokenodeService.getPokemonDetailsFromApi(id).pipe(
+                        tap((detail) => {
+                            const currentMap = this.pokemonDetailsMapSub.getValue();
+                            currentMap.set(id, detail);
+                            this.pokemonDetailsMapSub.next(currentMap);
+                        })
+                    );
+                    pokemonDetail.subscribe();
+                    return pokemonDetail;
+                }
+            })
+        );
     }
 }

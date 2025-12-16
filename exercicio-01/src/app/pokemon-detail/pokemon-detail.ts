@@ -20,9 +20,7 @@ interface PokemonParams extends Params {
 })
 
 export class PokemonDetail implements OnInit {
-  private params: PokemonParams = null;
-  private paramsId$ = of(this.params);
-  public pokemonObservable$ = combineLatest([this.pokenodeStore.pokemonDetailsMap$, this.paramsId$]).pipe(map(([pokemonMap, paramsId]) => pokemonMap.get(paramsId?.id)));
+  public pokemon$= new Observable<Pokemon>(null);
 
   constructor(private activatedRoute: ActivatedRoute, private pokenodeStore: PokenodeStore) { }
 
@@ -30,8 +28,7 @@ export class PokemonDetail implements OnInit {
     this.activatedRoute.params.subscribe((params: PokemonParams) => {
 
       if (params.id) {
-        this.params = params;
-        this.pokenodeStore.getPokemonDetails(params.id);
+        this.pokemon$=this.pokenodeStore.getPokemonDetails(params.id);
       }
     });
   }

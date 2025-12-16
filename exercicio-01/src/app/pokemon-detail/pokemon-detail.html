@@ -1,5 +1,5 @@
 
-@let pokemonDetail = pokemonObservable$ | async;
+@let pokemonDetail = pokemon$ | async;
 @if (pokemonDetail) {
     <p>Name: {{ pokemonDetail.name }}</p>
     <p>Total habilities: {{ pokemonDetail.abilities?.length }}</p>
