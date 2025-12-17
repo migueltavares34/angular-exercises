@@ -3,7 +3,9 @@ import { NamedAPIResourceList, Pokemon } from 'pokenode-ts';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-@Injectable()
+@Injectable({
+    providedIn:"root"
+})
 export class PokenodeService {
     protected API_URL = 'https://pokeapi.co/api/v2';
 

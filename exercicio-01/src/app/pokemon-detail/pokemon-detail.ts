@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { PokenodeStore } from '../pokenode.store';
 import { Pokemon } from 'pokenode-ts';
-import { combineLatest, map, Observable, of } from 'rxjs';
-import { PokenodeService } from '../pokenode.service';
+import {Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 interface PokemonParams extends Params {
@@ -15,12 +14,11 @@ interface PokemonParams extends Params {
   standalone: true,
   templateUrl: './pokemon-detail.html',
   styleUrl: './pokemon-detail.css',
-  imports: [AsyncPipe],
-  providers: [PokenodeStore, PokenodeService]
+  imports: [AsyncPipe]
 })
 
 export class PokemonDetail implements OnInit {
-  public pokemon$= new Observable<Pokemon>(null);
+  public pokemon$: Observable<Pokemon>=this.pokenodeStore.pokemonDetails$;
 
   constructor(private activatedRoute: ActivatedRoute, private pokenodeStore: PokenodeStore) { }
 
@@ -28,7 +26,7 @@ export class PokemonDetail implements OnInit {
     this.activatedRoute.params.subscribe((params: PokemonParams) => {
 
       if (params.id) {
-        this.pokemon$=this.pokenodeStore.getPokemonDetails(params.id);
+        this.pokenodeStore.getPokemonDetails(params.id);
       }
     });
   }
